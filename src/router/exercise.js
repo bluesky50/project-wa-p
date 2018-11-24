@@ -1,5 +1,20 @@
 import React, { Component } from 'react';
 
+import { Callout, Text } from '@blueprintjs/core';
+
+class LoadingError extends Component {
+	render() {
+		const { message } = this.props;
+		return (
+			<div style={styles.pageContainer}>
+				<Callout intent="warning">
+					<Text>{message}</Text>
+				</Callout>
+			</div>
+		)
+	}
+}
+
 export default class Exercise extends Component {
 	render() {
 		return (
