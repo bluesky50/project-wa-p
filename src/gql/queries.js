@@ -10,6 +10,16 @@ query {
 }
 `;
 
+export const ProjectQuery = gql`
+query project($projectId: String!) {
+	project(id: $projectId) {
+		id
+		title
+		description
+	}
+}
+`;
+
 export const SessionsQuery = gql`
 query {
 	sessions {

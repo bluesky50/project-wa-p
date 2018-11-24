@@ -3,7 +3,7 @@ import React from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import Home from './home';
 // import Dashboard from './dashboard';
-// import Project from './project';
+import { ProjectDetails2 } from './project';
 import Projects from './projects';
 // import Exercise from './exercise';
 import Exercises from './exercises';
@@ -28,7 +28,7 @@ export default () => {
 					<Route exact path="/home" component={Home}/>
 					{/* <Route exact path="/dashboard" component={Dashboard}/> */}
 					<Route exact path="/projects" component={Projects}/>
-					{/* <Route exact path="/projects/:projectId" component={Project}/> */}
+					<Route exact path="/projects/:projectId" component={ProjectDetails2}/>
 					<Route exact path="/exercises" component={Exercises}/>
 					{/* <Route exact path="/exercises/:exerciseId" component={Exercise}/> */}
 					<Route exact path="/sessions" component={Sessions}/>
