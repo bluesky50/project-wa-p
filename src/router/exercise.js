@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Query } from 'react-apollo';
 import { Callout, Text } from '@blueprintjs/core';
 import { ExerciseQuery } from '../gql/queries';
+import { Link } from 'react-router-dom';
 
 class LoadingError extends Component {
 	render() {
@@ -34,7 +35,8 @@ export default class Exercise extends Component {
 			return (
 				<div style={styles.pageContainer}>
 					<div style={styles.menuContainer}>
-						<Text>Exercise Info Menu</Text>
+						<Link to="/exercises">Exercises</Link>
+						<Text>Exercise Overview Info</Text>
 					</div>
 					<div style={styles.bodyContainer}>
 						<Callout title={exercise.title} style={styles.callout}>

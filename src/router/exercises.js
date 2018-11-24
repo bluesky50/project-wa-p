@@ -4,6 +4,22 @@ import { Link } from 'react-router-dom';
 import { ExercisesListComponent2 } from '../components/ExercisesList/exercisesListContainer';
 
 export default class Exercises extends Component {
+	constructor(props) {
+		super(props);
+
+		this.state = {
+			createModal: false
+		}
+	}
+
+	renderCreateExercise() {
+		if (this.state.createModal) {
+			return <Overlay className={Classes.OVERLAY_SCROLL_CONTAINER}/>
+		}
+		
+		return null;
+	}
+
 	render() {
 		return (
 			<div style={styles.pageContainer}>

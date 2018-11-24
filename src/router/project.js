@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { ProjectQuery } from '../gql/queries';
 import { Text, Callout } from '@blueprintjs/core';
 import { Query } from 'react-apollo';
-
+import { Link } from 'react-router-dom';
 
 class ProjectWarning extends Component {
 	render() {
@@ -35,7 +35,8 @@ export default class Project extends Component {
 			return (
 				<div style={styles.pageContainer}>
 					<div style={styles.menuContainer}>
-						<Text>Menu</Text>
+						<Link to="/projects">Projects</Link>
+						<Text>Project Overview Info</Text>
 					</div>
 					<div style={styles.bodyContainer}>
 						<Callout title={project.title} style={styles.callout}>
