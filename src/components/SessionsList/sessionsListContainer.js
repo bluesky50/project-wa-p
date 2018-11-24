@@ -1,8 +1,21 @@
 import React, { Component } from 'react';
 import SessionsList from './sessionsList';
-import { sessions } from '../../constants/sessions';
+// import { sessions } from '../../constants/sessions';
 import { SessionsQuery } from '../../gql/queries';
 import { Query } from 'react-apollo';
+import { Callout, Text } from '@blueprintjs/core';
+
+class SessionsWarning extends Component {
+	render() {
+		return (
+			<div style={styles.pageContainer}>
+				<Callout intent="warning">
+					<Text>{this.props.message}</Text>
+				</Callout>
+			</div>
+		);
+	}
+}
 
 export const SessionsListComponent2 = () => (
 	// eslint-disable-next-line no-unused-expressions
@@ -11,52 +24,40 @@ export const SessionsListComponent2 = () => (
 			if (loading) return ("Loading...");
 			if (error) {
 				console.log(error.message);
-				return (<p>{`Error! ${error.message}`}</p>);
+				return (<SessionsWarning message={`Error! ${error.message}`}/>);
 			}
-			return (
-				<div style={styles.container}>
-					<SessionsList sessions={data.sessions}/>
-				</div>
+			return (<SessionsListComponent sessions={data.sessions}/>
 			);
 		}}
 	</Query>
 )
 
-
 export default class SessionsListComponent extends Component {
-	constructor(props) {
-		super(props)
-		
-		this.state = {
-			sessions: []
+	renderSessions(sessions) {
+		if (sessions) {
+			return (
+				<div style={styles.container}>
+					<SessionsList sessions={sessions}/>
+				</div>
+			);
 		}
-		
-		this.getSessions = this.getSessions.bind(this)
-	}
 
-	componentDidMount() {
-		this.getSessions();
-	}
-
-	getSessions() {
-		this.setState({
-			sessions: sessions
-		});
+		return (
+			<SessionsWarning message={"Unable to fetch sessions"}/>
+		)
 	}
 
 	render() {
-		console.log(this.state.sessions)
-		return(
-			<div style={styles.container}>
-				<SessionsList sessions={this.state.sessions}/>
-			</div>
-		);
+		const { sessions } = this.props;
+		return this.renderSessions(sessions);
 	}
 }
 
 const styles = {
 	container: {
 		height: "100%",
-		width: "100%"
+		width: "100%",
+		display: "flex",
+		flexFlow: "column"
 	},
 }
