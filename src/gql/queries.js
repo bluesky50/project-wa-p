@@ -39,3 +39,13 @@ query {
 	}
 }
 `;
+
+export const ExerciseQuery = gql`
+query exercise($exerciseId: String!) {
+	exercise(id: $exerciseId) {
+		id
+		title
+		description
+	}
+}
+`;

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-
+import { Query } from 'react-apollo';
 import { Callout, Text } from '@blueprintjs/core';
+import { ExerciseQuery } from '../gql/queries';
 
 class LoadingError extends Component {
 	render() {
@@ -15,18 +16,51 @@ class LoadingError extends Component {
 	}
 }
 
+export const ExerciseDetailPage = ({ match }) => (
+	<Query query={ExerciseQuery} variables={{ exerciseId: match.params.exerciseId }}>
+		{({loading, error, data}) => {
+			if (loading) return (<p>Loading...</p>);
+			if (error) return (<LoadingError message={`Error! ${error.message}`}/>);
+			return (
+				<Exercise exercise={data.exercise}/>
+			);
+		}}
+	</Query>
+)
+
 export default class Exercise extends Component {
-	render() {
+	renderExercise(exercise) {
+		if (exercise) {
+			return (
+				<div style={styles.pageContainer}>
+					<div style={styles.menuContainer}>
+						<Text>Exercise Info Menu</Text>
+					</div>
+					<div style={styles.bodyContainer}>
+						<Callout title={exercise.title} style={styles.callout}>
+							<Text>Creator: Some user</Text>
+							<Text>Exercise tags, category, type</Text>
+						</Callout>
+						<Callout style={styles.callout}>
+							<Text>{exercise.description}</Text>
+						</Callout>
+						<Callout style={styles.callout}>
+							<Text>Exercise requirements</Text>
+						</Callout>
+					</div>
+				</div>
+			);
+		}
+
 		return (
-			<div style={styles.pageContainer}>
-				<div style={styles.menuContainer}>
-
-				</div>
-				<div style={styles.bodyContainer}>
-
-				</div>
-			</div>
+			<LoadingError message={"Unable to find exercise"}/>
 		);
+	}
+
+	render() {
+		const { exercise } = this.props;
+		return this.renderExercise(exercise);
+		
 	}
 }
 
@@ -40,12 +74,17 @@ const styles = {
 	menuContainer: {
 		height: "70px",
 		width: "100%",
-		background: "darkgray"
+		// background: "darkgray"
 	},
 	bodyContainer: {
 		width: "100%",
 		flexGrow: "1",
 		display: "flex",
-		background: "lightgray"
+		flexFlow: "column",
+		padding: "10px",
+		// background: "lightgray"
+	},
+	callout: {
+		marginBottom: "10px"
 	}
 }

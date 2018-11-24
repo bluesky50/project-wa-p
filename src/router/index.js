@@ -5,7 +5,7 @@ import Home from './home';
 // import Dashboard from './dashboard';
 import { ProjectDetails2 } from './project';
 import Projects from './projects';
-// import Exercise from './exercise';
+import { ExerciseDetailPage } from './exercise';
 import Exercises from './exercises';
 import Session from './session';
 import Sessions from './sessions';
@@ -30,7 +30,7 @@ export default () => {
 					<Route exact path="/projects" component={Projects}/>
 					<Route exact path="/projects/:projectId" component={ProjectDetails2}/>
 					<Route exact path="/exercises" component={Exercises}/>
-					{/* <Route exact path="/exercises/:exerciseId" component={Exercise}/> */}
+					<Route exact path="/exercises/:exerciseId" component={ExerciseDetailPage}/>
 					<Route exact path="/sessions" component={Sessions}/>
 					<Route exact path="/sessions/:sessionId" component={Session}/>
 				</Switch>
