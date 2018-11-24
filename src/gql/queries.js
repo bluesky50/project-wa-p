@@ -30,6 +30,26 @@ query {
 }
 `;
 
+export const SessionQuery = gql`
+query session($sessionId: String!) {
+	session(id: $sessionId) {
+		id
+		title
+		project {
+			title
+			description
+		}
+		description
+		participants {
+			username
+		}
+		type
+		category
+		tags
+	}
+}
+`;
+
 export const ExercisesQuery = gql`
 query {
 	exercises {

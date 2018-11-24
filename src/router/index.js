@@ -7,7 +7,7 @@ import { ProjectDetails2 } from './project';
 import Projects from './projects';
 import { ExerciseDetailPage } from './exercise';
 import Exercises from './exercises';
-import Session from './session';
+import { SessionDetailPage } from './session';
 import Sessions from './sessions';
 import UserPortal from './userPortal';
 import { Button, Alignment, Navbar } from "@blueprintjs/core";
@@ -32,7 +32,7 @@ export default () => {
 					<Route exact path="/exercises" component={Exercises}/>
 					<Route exact path="/exercises/:exerciseId" component={ExerciseDetailPage}/>
 					<Route exact path="/sessions" component={Sessions}/>
-					<Route exact path="/sessions/:sessionId" component={Session}/>
+					<Route exact path="/sessions/:sessionId" component={SessionDetailPage}/>
 				</Switch>
 			</BrowserRouter>
 		</div>

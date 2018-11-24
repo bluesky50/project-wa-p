@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import SessionFeatureList from './sessionFeatureList';
 import TddChecklist from './tddChecklist';
+import { projects } from '../../constants/projects';
 
 export default class SessionProject extends Component {
 	constructor(props) {
@@ -33,13 +34,15 @@ export default class SessionProject extends Component {
 		// console.log(this.props.project.features.join(', '));
 		// console.log(this.props.project);
 
+		const seedProject = projects[0];
+
 		const actions = {
 			completeFeature: this.completeFeature,
 			selectFeature: this.selectFeature
 		}
 		// console.log(actions);
 
-		const ftrs = this.props.project.features.filter((f) => {
+		const ftrs = seedProject.features.filter((f) => {
 			return !this.state.completedFeatures.includes(f.id)
 		})
 

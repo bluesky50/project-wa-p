@@ -5,7 +5,442 @@ import { projects } from '../constants/projects';
 import SessionProject from '../components/Session/sessionProject';
 import Countdown from '../components/Countdown/countdown';
 import SessionEventsList from '../components/Session/sessionEventsList';
-import { Tooltip, Position, Popover, H1, Classes, Button, Divider } from '@blueprintjs/core';
+import { Callout, Text, Tooltip, Position, Popover, H1, Classes, Button, Divider } from '@blueprintjs/core';
+import { SessionQuery } from '../gql/queries';
+import { Query } from 'react-apollo';
+
+class LoadingError extends Component {
+	render() {
+		return (
+			<div style={styles.pageContainer}>
+				<Callout intent="warning">
+					<Text>{this.props.message}</Text>
+				</Callout>
+			</div>
+		);
+	}
+}
+
+export const SessionDetailPage = ({ match }) => (
+	// eslint-disable-next-line no-unused-expressions
+	<Query query={SessionQuery} variables={{ sessionId: match.params.sessionId }}>
+		{({loading, error, data}) => {
+			if (loading) return (<p>Loading...</p>);
+			if (error) return (<LoadingError message={`Error! ${error.message}`}/>);
+			return (<Session2 session={data.session}/>);
+		}}
+	</Query>
+);
+
+class Session2 extends Component {
+	constructor(props) {
+		super(props);
+
+		this.state = {
+			startTime: new Date(),
+			roundTimeLimits: [8],
+		}
+	}
+
+	addNewTimeLimit() {
+		const newTimeLimit = Math.floor(Math.random() * 7) + 8
+		if (this.state.roundTimeLimits.length < 8) {
+			this.setState({
+				roundTimeLimits: [...this.state.roundTimeLimits, newTimeLimit]
+			});
+		}
+	}
+
+	renderLoadingError(message) {
+		return (<LoadingError message={message}/>);
+	}
+
+	renderParticipants(participants) {
+		if (participants) {
+			return (
+				<>
+					<h3>Total Participatns: {participants.map(user => user.username).join(", ")}</h3>
+					<Divider/>
+					<Button className="bp3-intent-primary" icon="add">Invite</Button>
+				</>
+			)
+		}
+
+		return this.renderLoadingError("Unable to render session participants");
+	}
+
+	renderSessionEvents(events) {
+		const { pairingEvents, otherEvents } = sessions[0];
+		
+		if (pairingEvents && otherEvents) {
+			return (
+				<div style={styles.bBottom}>
+					<div style={styles.bottomLeft}>
+						<SessionEventsList title={"Session Pairing Events"} events={pairingEvents} color1={"#00998C"} color2={"#7157D9"}/>
+					</div>
+					<div style={styles.bottomRight}>
+						<SessionEventsList title={"Other Events"} events={otherEvents} color1={"#EB532D"} color2={"#9BBF30"}/>
+					</div>
+				</div>
+			);
+		}
+
+		return this.renderLoadingError("Unable to render session events");
+	}
+
+	renderSessionManagement() {
+		const currentTimeLimit = this.state.roundTimeLimits.length > 0 ? this.state.roundTimeLimits[this.state.roundTimeLimits.length-1] : 0;
+
+		return (
+			<div style={styles.bMiddle}>
+				<Countdown endTime={new Date(new Date().getTime() + currentTimeLimit*60000)}/>
+				<h3>Session Management: P1/P2 turn</h3>
+				<div>
+					Rounds: {this.state.roundTimeLimits.length}/8
+				</div>
+				<Countdown timeLimit={currentTimeLimit}/>
+			</div>
+		);
+	}
+
+	renderSessionProject(project) {
+		if (true) {
+			return (
+				<div style={styles.bTop}>
+					<SessionProject project={project}/>
+				</div>
+			);
+		}
+
+		return this.renderLoadingError("Unable to load session project");
+	}
+
+	renderSession(session) {
+		if (session) {
+			// const currentTimeLimit = this.state.roundTimeLimits.length > 0 ? this.state.roundTimeLimits[this.state.roundTimeLimits.length-1] : 0;
+			return (
+				<div style={styles.pageContainer}>
+					
+					<div style={styles.menuContainer}>
+						<Link to="/sessions">Sessions</Link>
+					</div>
+					
+					<div style={styles.bodyContainer}>
+						
+						<div style={styles.heading}>
+							<h3>{session.title}</h3>
+							<h3>Start Date</h3>
+							<div style={{display: "flex", alignItems: "center"}}>
+								{this.renderParticipants(session.participants)}
+							</div>
+							<h3>Visibility: public</h3>
+						</div>
+						
+						{this.renderSessionProject(session.project)}
+						
+						{this.renderSessionManagement()}
+						
+						{this.renderTimeline(null)}
+						
+						{this.renderSessionEvents(null)}
+					</div>
+
+				</div>
+			);
+		}
+
+		return this.renderLoadingError("Unable to fetch session");
+	}
+
+	renderTimeline(events) {
+		if (true) {
+			return(
+				<div style={styles.bottomDetails}>
+					<div style={{ flexGrow: 1, ...styles.eventA }}>
+						<Popover
+							content={<H1>Popover!</H1>}
+							position={Position.TOP}
+							popoverClassName={Classes.POPOVER_CONTENT_SIZING}
+						>
+							<Tooltip
+								content={<span>Mike Driver (8:00)</span>}
+								position={Position.TOP}
+								usePortal={false}
+							>
+								<p>
+									A
+								</p>
+							</Tooltip>
+						</Popover>
+					</div>
+					
+					
+					<div style={{ flexGrow: 3, ...styles.eventB }}>
+						<Popover
+								content={<H1>Popover!</H1>}
+								position={Position.TOP}
+								popoverClassName={Classes.POPOVER_CONTENT_SIZING}
+							>
+								<Tooltip
+									content={<span>Bill Driver (8:00)</span>}
+									position={Position.TOP}
+									usePortal={false}
+								>
+									<p>
+										B
+									</p>
+							</Tooltip>
+						</Popover></div>
+					<div style={{ flexGrow: 3, ...styles.eventA }}>
+						<Popover
+								content={<H1>Popover!</H1>}
+								position={Position.TOP}
+								popoverClassName={Classes.POPOVER_CONTENT_SIZING}
+							>
+								<Tooltip
+									content={<span>Mike Driver (8:00)</span>}
+									position={Position.TOP}
+									usePortal={false}
+								>
+									<p>
+										A
+									</p>
+							</Tooltip>
+						</Popover>
+					</div>
+					<div style={{ flexGrow: 4, ...styles.eventB }}>
+						<Popover
+								content={<H1>Popover!</H1>}
+								position={Position.TOP}
+								popoverClassName={Classes.POPOVER_CONTENT_SIZING}
+							>
+								<Tooltip
+									content={<span>Bill Driver (8:00)</span>}
+									position={Position.TOP}
+									usePortal={false}
+								>
+									<p>
+										B
+									</p>
+								</Tooltip>
+						</Popover>
+					</div>
+					<div style={{ flexGrow: 2, ...styles.eventA }}>
+						<Popover
+								content={<H1>Popover!</H1>}
+								position={Position.TOP}
+								popoverClassName={Classes.POPOVER_CONTENT_SIZING}
+							>
+								<Tooltip
+									content={<span>Mike Driver (8:00)</span>}
+									position={Position.TOP}
+									usePortal={false}
+								>
+									<p>
+										A
+									</p>
+								</Tooltip>
+						</Popover>
+					</div>
+					<div style={{ flexGrow: 5, ...styles.eventB }}>
+						<Popover
+								content={<H1>Popover!</H1>}
+								position={Position.TOP}
+								popoverClassName={Classes.POPOVER_CONTENT_SIZING}
+							>
+								<Tooltip
+									content={<span>Bill Driver (8:00)</span>}
+									position={Position.TOP}
+									usePortal={false}
+								>
+									<p>
+										B
+									</p>
+								</Tooltip>
+						</Popover>
+					</div>
+					<div style={{ flexGrow: 3, ...styles.eventA }}>
+						<Popover
+								content={<H1>Popover!</H1>}
+								position={Position.TOP}
+								popoverClassName={Classes.POPOVER_CONTENT_SIZING}
+							>
+								<Tooltip
+									content={<span>Mike Driver (8:00)</span>}
+									position={Position.TOP}
+									usePortal={false}
+								>
+									<p>
+										A
+									</p>
+								</Tooltip>
+						</Popover>
+					</div>
+					<div style={{ flexGrow: 1, ...styles.eventB }}>
+						<Popover
+								content={<H1>Popover!</H1>}
+								position={Position.TOP}
+								popoverClassName={Classes.POPOVER_CONTENT_SIZING}
+							>
+								<Tooltip
+									content={<span>Bill Driver (8:00)</span>}
+									position={Position.TOP}
+									usePortal={false}
+								>
+									<p>
+										B
+									</p>
+							</Tooltip>
+						</Popover>
+					</div>
+					<div style={{ flexGrow: 1, ...styles.eventA }}>
+						<Popover
+								content={<H1>Popover!</H1>}
+								position={Position.TOP}
+								popoverClassName={Classes.POPOVER_CONTENT_SIZING}
+							>
+								<Tooltip
+									content={<span>Mike Driver (8:00)</span>}
+									position={Position.TOP}
+									usePortal={false}
+								>
+									<p>
+										A
+									</p>
+								</Tooltip>
+						</Popover>
+					</div>
+					<div style={{ flexGrow: 3, ...styles.eventB }}>
+						<Popover
+								content={<H1>Popover!</H1>}
+								position={Position.TOP}
+								popoverClassName={Classes.POPOVER_CONTENT_SIZING}
+							>
+								<Tooltip
+									content={<span>Bill Driver (8:00)</span>}
+									position={Position.TOP}
+									usePortal={false}
+								>
+									<p>
+										B
+									</p>
+								</Tooltip>
+						</Popover>
+					</div>
+					<div style={{ flexGrow: 3, ...styles.eventA }}>
+						<Popover
+								content={<H1>Popover!</H1>}
+								position={Position.TOP}
+								popoverClassName={Classes.POPOVER_CONTENT_SIZING}
+							>
+								<Tooltip
+									content={<span>Mike Driver (8:00)</span>}
+									position={Position.TOP}
+									usePortal={false}
+								>
+									<p>
+										A
+									</p>
+								</Tooltip>
+						</Popover>
+					</div>
+					<div style={{ flexGrow: 4, ...styles.eventB }}>
+						<Popover
+								content={<H1>Popover!</H1>}
+								position={Position.TOP}
+								popoverClassName={Classes.POPOVER_CONTENT_SIZING}
+							>
+								<Tooltip
+									content={<span>Bill Driver (8:00)</span>}
+									position={Position.TOP}
+									usePortal={false}
+								>
+									<p>
+										B
+									</p>
+								</Tooltip>
+						</Popover>
+					</div>
+					<div style={{ flexGrow: 2, ...styles.eventA }}>
+						<Popover
+								content={<H1>Popover!</H1>}
+								position={Position.TOP}
+								popoverClassName={Classes.POPOVER_CONTENT_SIZING}
+							>
+								<Tooltip
+									content={<span>Mike Driver (8:00)</span>}
+									position={Position.TOP}
+									usePortal={false}
+								>
+									<p>
+										A
+									</p>
+								</Tooltip>
+						</Popover>
+					</div>
+					<div style={{ flexGrow: 5, ...styles.eventB }}>
+						<Popover
+								content={<H1>Popover!</H1>}
+								position={Position.TOP}
+								popoverClassName={Classes.POPOVER_CONTENT_SIZING}
+							>
+								<Tooltip
+									content={<span>Bill Driver (8:00)</span>}
+									position={Position.TOP}
+									usePortal={false}
+								>
+									<p>
+										B
+									</p>
+								</Tooltip>
+						</Popover>
+					</div>
+					<div style={{ flexGrow: 3, ...styles.eventA }}>
+						<Popover
+								content={<H1>Popover!</H1>}
+								position={Position.TOP}
+								popoverClassName={Classes.POPOVER_CONTENT_SIZING}
+							>
+								<Tooltip
+									content={<span>Mike Driver (8:00)</span>}
+									position={Position.TOP}
+									usePortal={false}
+								>
+									<p>
+										A
+									</p>
+								</Tooltip>
+						</Popover>
+					</div>
+					<div style={{ flexGrow: 1, ...styles.eventB }}>
+						<Popover
+								content={<H1>Popover!</H1>}
+								position={Position.TOP}
+								popoverClassName={Classes.POPOVER_CONTENT_SIZING}
+							>
+								<Tooltip
+									content={<span>Bill Driver (8:00)</span>}
+									position={Position.TOP}
+									usePortal={false}
+								>
+									<p>
+										B
+									</p>
+								</Tooltip>
+						</Popover>
+					</div>
+				</div>
+			);
+		}
+
+		return this.renderLoadingError("Unable to load timeline")
+	}
+
+	render() {
+		const { session } = this.props;
+		return this.renderSession(session);
+	}
+}
 
 
 export default class Session extends Component {
