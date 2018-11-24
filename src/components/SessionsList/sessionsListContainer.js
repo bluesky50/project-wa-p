@@ -7,10 +7,11 @@ import { Callout, Text } from '@blueprintjs/core';
 
 class SessionsWarning extends Component {
 	render() {
+		const { message } = this.props;
 		return (
-			<div style={styles.pageContainer}>
+			<div style={styles.container}>
 				<Callout intent="warning">
-					<Text>{this.props.message}</Text>
+					<Text>{message}</Text>
 				</Callout>
 			</div>
 		);
@@ -22,12 +23,8 @@ export const SessionsListComponent2 = () => (
 	<Query query={SessionsQuery}>
 		{({loading, error, data}) => {
 			if (loading) return ("Loading...");
-			if (error) {
-				console.log(error.message);
-				return (<SessionsWarning message={`Error! ${error.message}`}/>);
-			}
-			return (<SessionsListComponent sessions={data.sessions}/>
-			);
+			if (error) return (<SessionsWarning message={`Error! ${error.message}`}/>);
+			return (<SessionsListComponent sessions={data.sessions}/>);
 		}}
 	</Query>
 )

@@ -1,50 +1,49 @@
 import React, { Component } from 'react';
 import ExercisesList from './exercisesList';
-import { exercises } from '../../constants/exercises';
+// import { exercises } from '../../constants/exercises';
 import { ExercisesQuery } from '../../gql/queries';
 import { Query } from 'react-apollo';
+import { Callout, Text } from '@blueprintjs/core';
+
+class ExercisesWarning extends Component {
+	render() {
+		const { message } = this.props;
+		return (
+			<div style={styles.container}>
+				<Callout intent="warning">
+					<Text>{message}</Text>
+				</Callout>
+			</div>
+		);
+	}
+}
 
 export const ExercisesListComponent2 = () => (
 	<Query query={ExercisesQuery}>
 		{({loading, error, data}) => {
 			if (loading) return (<p>Loading...</p>);
-			if (error) return (<p>{`Error! ${error.message}`}</p>);
-			return (
-				<div style={styles.container}>
-					<ExercisesList exercises={data.exercises}/>
-				</div>
-			);
+			if (error) return (<ExercisesWarning message={`Error! ${error.message}`}/>);
+			return (<ExercisesListComponent exercises={data.exercises}/>);
 		}}
 	</Query>
 )
 
 export default class ExercisesListComponent extends Component {
-	constructor(props) {
-		super(props);
-
-		this.state = {
-			exercises: []
+	renderExercises(exercises) {
+		if (exercises) {
+			return (
+				<div style={styles.container}>
+					<ExercisesList exercises={exercises}/>
+				</div>
+			)
 		}
 
-		this.getExercises = this.getExercises.bind(this);
-	}
-
-	componentDidMount() {
-		this.getExercises();
-	}
-
-	getExercises() {
-		this.setState({
-			exercises: exercises
-		})
+		return (<ExercisesWarning message={"Unable to fetch exercises"}/>);
 	}
 
 	render() {
-		return(
-			<div style={styles.container}>
-				<ExercisesList exercises={this.state.exercises}/>
-			</div>
-		);
+		const { exercises } = this.props;
+		return this.renderExercises(exercises);
 	}
 }
 
@@ -52,5 +51,7 @@ const styles = {
 	container: {
 		height: "100%",
 		width: "100%",
+		display: "flex",
+		flexFlow: "column"
 	}
 }
