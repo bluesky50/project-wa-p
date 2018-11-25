@@ -3,6 +3,7 @@ import React from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import Home from './home';
 // import Dashboard from './dashboard';
+import ProfilePage from './profilePage';
 import { ProjectDetails2 } from './project';
 import Projects from './projects';
 import { ExerciseDetailPage } from './exercise';
@@ -24,8 +25,9 @@ export default () => {
 			</Navbar>
 			<BrowserRouter>
 				<Switch>
-					<Route exact path="/access" render={(props) => <UserPortal {...props}/>}/>
+					<Route exact path="/" render={(props) => <UserPortal {...props}/>}/>
 					<Route exact path="/home" component={Home}/>
+					<Route exact path="/me" component={ProfilePage}/>
 					{/* <Route exact path="/dashboard" component={Dashboard}/> */}
 					<Route exact path="/projects" component={Projects}/>
 					<Route exact path="/projects/:projectId" component={ProjectDetails2}/>
