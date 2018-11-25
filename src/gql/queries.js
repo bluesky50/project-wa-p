@@ -69,3 +69,14 @@ query exercise($exerciseId: String!) {
 	}
 }
 `;
+
+export const CreateExerciseMutation = gql`
+mutation createExercise($title: String!, $description: String!) {
+	createExercise(title: $title, description: $description) {
+		title
+		description
+		type
+		category
+	}
+}
+`;
